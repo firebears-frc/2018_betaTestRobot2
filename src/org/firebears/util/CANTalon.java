@@ -1,8 +1,11 @@
 package org.firebears.util;
 
+import java.util.function.Consumer;
+
 import com.ctre.phoenix.MotorControl.CAN.TalonSRX;
 
 import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.EntryNotification;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.SpeedController;
@@ -160,7 +163,12 @@ public class CANTalon implements SpeedController, LiveWindowSendable {
 	@Override
 	public void startLiveWindowMode() {
 		setSpeed(0); // Stop for safety
-		m_valueListener = m_valueEntry.addListener((event) -> setSpeed(event.value.getDouble()),
+		final Consumer<EntryNotification> listener = new Consumer<EntryNotification>()  {
+			public void accept(EntryNotification event) {
+				setSpeed(event.value.getDouble());
+			}
+		};
+		m_valueListener = m_valueEntry.addListener(listener,
 				EntryListenerFlags.kImmediate | EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 	}
 
