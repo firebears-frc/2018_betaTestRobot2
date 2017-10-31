@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 /**
@@ -55,6 +56,8 @@ public class Board extends Subsystem {
     	if (Math.abs(speed) > 0.1)  {
     		double current = ((org.firebears.util.CANTalon)motor).getOutputCurrent();
     		System.out.println("::: motor speed = " + speed + " : current = " + current);
+    		SmartDashboard.putNumber("speed", speed);
+    		SmartDashboard.putNumber("current", current);
     	}
     }
 }
