@@ -14,10 +14,10 @@ package org.firebears.betaTestRobot2;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.command.Command;
 
 import org.firebears.betaTestRobot2.commands.*;
 import org.firebears.betaTestRobot2.subsystems.*;
-import org.firebears.betaTestRobot2.commands.HelloCommand;
 
 
 /**
@@ -69,12 +69,22 @@ public class OI {
 				return 5;
 			}
 		};
+		Robot.report.addJoystick(0, "Main joystick", joystick);
+		
         trigger = new JoystickButton(joystick, 1);
-        trigger.whenPressed(new HelloCommand("HELLO WORLD"));
+        Command triggerCommand = new HelloCommand("HELLO WORLD");
+        trigger.whenPressed(triggerCommand);
+        Robot.report.addJoystickButton(0, 1, "Say Hello", triggerCommand);
+        
         thumbButton = new JoystickButton(joystick, 2);
-        thumbButton.whenPressed(new HelloCommand("GOODBYE"));
-        button6 = new JoystickButton(joystick, 6);
-        button6.whenReleased(new RandomCommand());
+        Command thumbCommand = new HelloCommand("GOODBYE");
+        thumbButton.whenPressed(thumbCommand);
+        Robot.report.addJoystickButton(0, 2, "Say Goodbye", thumbCommand);
+        
+        button6 = new JoystickButton(joystick, 6); 
+        Command button6Command = new RandomCommand();
+        button6.whenReleased(button6Command);
+        Robot.report.addJoystickButton(0, 6, "Random Action", button6Command);
 
         // SmartDashboard Buttons
         SmartDashboard.putData("HelloCommand", new HelloCommand("HI"));
