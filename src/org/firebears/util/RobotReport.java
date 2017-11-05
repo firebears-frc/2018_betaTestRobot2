@@ -32,6 +32,7 @@ public class RobotReport {
 	private Map<Integer, Tuple> canMap = new TreeMap<>();
 	private Map<Integer, Tuple> joystickMap = new TreeMap<>();
 	private Map<Integer, Map<Integer, Tuple>> joystickButtonMap = new TreeMap<>();
+	private Map<Integer, String> otherConfigMap = new TreeMap<>();
 
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
 	private final DecimalFormat numberFormat = new DecimalFormat("###,###,###,###,##0");
@@ -58,6 +59,10 @@ public class RobotReport {
 
 	public void addCAN(Integer id, String desc, Object component) {
 		canMap.put(id, new Tuple(desc, component));
+	}
+	
+	public void addOtherConfig(Integer id, String desc) {
+		otherConfigMap.put(id, desc);
 	}
 
 	public void addJoystick(Integer joystickId, String desc, Joystick stick) {
@@ -116,6 +121,15 @@ public class RobotReport {
 			out.println();
 			for (Integer id : canMap.keySet()) {
 				out.printf("* %d = %s%n", id, canMap.get(id));
+			}
+			out.println();
+		}
+		
+		if (!otherConfigMap.isEmpty()) {
+			out.println("## Other Configuration");
+			out.println();
+			for (Integer id : otherConfigMap.keySet()) {
+				out.printf("* %d = %s%n", id, otherConfigMap.get(id));
 			}
 			out.println();
 		}

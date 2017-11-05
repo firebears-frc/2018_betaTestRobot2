@@ -73,4 +73,9 @@ public class HelloCommand extends Command {
 	protected void interrupted() {
 		end();
 	}
+	
+	@Override
+	public String toString() {
+		return "HelloCommand(" + m_message + ")";
+	}
 }

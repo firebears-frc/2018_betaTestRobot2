@@ -1,12 +1,10 @@
 package org.firebears.betaTestRobot2.commands;
 
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-
 import java.util.Random;
 
-import org.firebears.betaTestRobot2.Robot;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.command.Command;
 
 /**
  * Randomly change values on the Labview dashboard.
