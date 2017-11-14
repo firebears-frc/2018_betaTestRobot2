@@ -30,6 +30,7 @@ public class RobotReport {
 	private Map<Integer, Tuple> analogInputMap = new TreeMap<>();
 	private Map<Integer, Tuple> pwmMap = new TreeMap<>();
 	private Map<Integer, Tuple> canMap = new TreeMap<>();
+	private Map<Integer, Tuple> relayMap = new TreeMap<>();
 	private Map<Integer, Tuple> joystickMap = new TreeMap<>();
 	private Map<Integer, Map<Integer, Tuple>> joystickButtonMap = new TreeMap<>();
 	private Map<Integer, String> otherConfigMap = new TreeMap<>();
@@ -61,6 +62,10 @@ public class RobotReport {
 		canMap.put(id, new Tuple(desc, component));
 	}
 	
+	public void addRelay(Integer id, String desc, Object component) {
+		relayMap.put(id, new Tuple(desc, component));
+	}
+	
 	public void addOtherConfig(Integer id, String desc) {
 		otherConfigMap.put(id, desc);
 	}
@@ -89,17 +94,35 @@ public class RobotReport {
 			out.println();
 		}
 
+		if (!canMap.isEmpty()) {
+			out.println("## CAN");
+			out.println();
+			for (Integer id : canMap.keySet()) {
+				out.printf("* %d = %s%n", id, canMap.get(id));
+			}
+			out.println();
+		}
+		
 		if (!digitalIoMap.isEmpty()) {
-			out.println("## Digital IOs");
+			out.println("## DIO");
 			out.println();
 			for (Integer id : digitalIoMap.keySet()) {
 				out.printf("* %d = %s%n", id, digitalIoMap.get(id));
 			}
 			out.println();
 		}
+		
+		if (!relayMap.isEmpty()) {
+			out.println("## RELAY");
+			out.println();
+			for (Integer id : relayMap.keySet()) {
+				out.printf("* %d = %s%n", id, relayMap.get(id));
+			}
+			out.println();
+		}
 
 		if (!analogInputMap.isEmpty()) {
-			out.println("## Analog Inputs");
+			out.println("## ANALOG IN");
 			out.println();
 			for (Integer id : analogInputMap.keySet()) {
 				out.printf("* %d = %s%n", id, analogInputMap.get(id));
@@ -108,19 +131,10 @@ public class RobotReport {
 		}
 
 		if (!pwmMap.isEmpty()) {
-			out.println("## PWMs");
+			out.println("## PWM");
 			out.println();
 			for (Integer id : pwmMap.keySet()) {
 				out.printf("* %d = %s%n", id, pwmMap.get(id));
-			}
-			out.println();
-		}
-
-		if (!canMap.isEmpty()) {
-			out.println("## CAN");
-			out.println();
-			for (Integer id : canMap.keySet()) {
-				out.printf("* %d = %s%n", id, canMap.get(id));
 			}
 			out.println();
 		}
