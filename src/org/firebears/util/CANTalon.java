@@ -38,6 +38,7 @@ public class CANTalon implements SpeedController, LiveWindowSendable {
 	}
 
 	private final TalonSRX talonSRX;
+	private final int deviceNumber;
 
 	private NetworkTable networkTable;
 
@@ -48,6 +49,7 @@ public class CANTalon implements SpeedController, LiveWindowSendable {
 	public CANTalon(int deviceNumber) {
 		talonSRX = new TalonSRX(deviceNumber);
 		talonSRX.setControlMode(TalonControlMode.PercentVbus.value);
+		this.deviceNumber = deviceNumber;
 	}
 
 	public void changeControlMode(TalonControlMode controlMode) {
@@ -190,5 +192,10 @@ public class CANTalon implements SpeedController, LiveWindowSendable {
 			m_valueEntry.setDouble(getSpeed());
 		}
 	}
+	  
+	  @Override
+	  public String toString() {
+		  return "CANTalon(" + deviceNumber + ")";
+	  }
 }
 
