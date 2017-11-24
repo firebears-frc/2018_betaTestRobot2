@@ -183,7 +183,7 @@ public class CANTalon implements SpeedController, LiveWindowSendable {
 	
 	  @Override
 	public void stopMotor() {
-		talonSRX.disableControl();
+		talonSRX.stopMotor();
 	}
 	  
 	  @Override
