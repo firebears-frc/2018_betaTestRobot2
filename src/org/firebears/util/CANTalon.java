@@ -3,6 +3,8 @@ package org.firebears.util;
 import java.util.function.Consumer;
 
 import com.ctre.phoenix.MotorControl.CAN.TalonSRX;
+import com.ctre.phoenix.MotorControl.CAN.TalonSRXJNI;
+import com.ctre.phoenix.MotorControl.SmartMotorController.TalonControlMode;
 
 import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.EntryNotification;
@@ -50,11 +52,16 @@ public class CANTalon implements SpeedController, LiveWindowSendable {
 		talonSRX = new TalonSRX(deviceNumber);
 		talonSRX.setControlMode(TalonControlMode.PercentVbus.value);
 		this.deviceNumber = deviceNumber;
+		m_handle = TalonSRXJNI.new_TalonSRX(deviceNumber);
 	}
 
 	public void changeControlMode(TalonControlMode controlMode) {
 		talonSRX.changeControlMode(
 				com.ctre.phoenix.MotorControl.SmartMotorController.TalonControlMode.valueOf(controlMode.value));
+		m_controlMode = controlMode;
+		if (controlMode == TalonControlMode.Disabled) {
+			m_controlEnabled = false;
+		}
 	}
 
 	public void clearStickyFaults() {
@@ -139,9 +146,60 @@ public class CANTalon implements SpeedController, LiveWindowSendable {
 		talonSRX.reverseSensor(flip);
 	}
 
+	public void enableControl() {
+		talonSRX.enableControl();
+	}
+	
+	long m_handle = 0;
+	double m_setPoint;
+	private TalonControlMode m_controlMode;
+	boolean m_controlEnabled = true;
+	boolean m_isInverted = false;
+	boolean m_stopped = false;
+	
 	@Override
-	public void set(double speed) {
-		talonSRX.set(speed);
+	public void set(double outputValue) {
+		//talonSRX.set(outputValue);
+		long m_handle = TalonSRXJNI.new_TalonSRX(deviceNumber);
+	    if (m_stopped) {
+	      enableControl();
+	      m_stopped = false;
+	    }
+	    if (m_controlEnabled) {
+	      m_setPoint = outputValue; /* cache set point for getSetpoint() */
+	      switch (m_controlMode) {
+	        case PercentVbus:
+	          TalonSRXJNI.Set(m_handle, m_isInverted ? -outputValue : outputValue);
+	          break;
+	        case Follower:
+	          TalonSRXJNI.SetDemand(m_handle, (int) outputValue);
+	          break;
+	        case Voltage:
+	          // Voltage is an 8.8 fixed point number.
+	          int volts = (int) ((m_isInverted ? -outputValue : outputValue) * 256);
+	          TalonSRXJNI.SetDemand(m_handle, volts);
+	          break;
+	        case Speed:
+	          TalonSRXJNI.SetDemand(m_handle, (int)(m_isInverted ? -outputValue : outputValue));
+	          break;
+	        case Position:
+	          TalonSRXJNI.SetDemand(m_handle, (int)outputValue);
+	          break;
+	        case Current:
+	          double milliamperes = (m_isInverted ? -outputValue : outputValue) * 1000.0; /* mA*/
+	          TalonSRXJNI.SetDemand(m_handle, (int) milliamperes);
+	          break;
+	        case MotionProfile:
+	          TalonSRXJNI.SetDemand(m_handle, (int) outputValue);
+	          break;
+	        case MotionMagic:
+	          TalonSRXJNI.SetDemand(m_handle, (int)outputValue);
+	          break;
+	        default:
+	          break;
+	      }
+	      TalonSRXJNI.SetModeSelect(m_handle, m_controlMode.value);
+	    }
 	}
 
 	public void setFeedbackDevice(FeedbackDevice device) {
@@ -152,6 +210,7 @@ public class CANTalon implements SpeedController, LiveWindowSendable {
 	@Override
 	public void setInverted(boolean isInverted) {
 		talonSRX.setInverted(isInverted);
+		m_isInverted = isInverted;
 	}
 
 	public void setPID(double p, double i, double d, double f, int izone, double closeLoopRampRate, int profile) {
@@ -184,6 +243,7 @@ public class CANTalon implements SpeedController, LiveWindowSendable {
 	  @Override
 	public void stopMotor() {
 		talonSRX.stopMotor();
+	    m_stopped = true;
 	}
 	  
 	  @Override
