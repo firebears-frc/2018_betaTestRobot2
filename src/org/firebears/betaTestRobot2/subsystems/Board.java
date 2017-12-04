@@ -54,7 +54,7 @@ public class Board extends Subsystem {
     public void setMotor(double speed) {
     	motor.set(speed);
     	if (Math.abs(speed) > 0.1)  {
-    		double current = ((org.firebears.util.CANTalon)motor).getOutputCurrent();
+    		double current = RobotMap.boardmotorTalonSRX.getOutputCurrent();
     		System.out.println("::: motor speed = " + speed + " : current = " + current);
     		SmartDashboard.putNumber("speed", speed);
     		SmartDashboard.putNumber("current", current);
