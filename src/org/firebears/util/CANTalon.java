@@ -3,6 +3,7 @@ package org.firebears.util;
 import java.util.function.Consumer;
 
 import com.ctre.phoenix.MotorControl.ControlMode;
+import com.ctre.phoenix.MotorControl.FeedbackDevice;
 import com.ctre.phoenix.MotorControl.NeutralMode;
 import com.ctre.phoenix.MotorControl.CAN.TalonSRX;
 
@@ -13,59 +14,25 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindowSendable;
 
-/**
- * Wrapper class around the new TalonSRX class. This class adds SpeedController
- * and LiveWindowSendable interfaces.
- */
 public class CANTalon implements SpeedController, LiveWindowSendable {
-
-	public enum FeedbackDevice {
-		QuadEncoder(0, com.ctre.phoenix.MotorControl.FeedbackDevice.QuadEncoder), AnalogPot(2,
-				com.ctre.phoenix.MotorControl.FeedbackDevice.Analog), AnalogEncoder(3, null), EncRising(4,
-						com.ctre.phoenix.MotorControl.FeedbackDevice.Tachometer), EncFalling(5,
-								null), CtreMagEncoder_Relative(6, null), CtreMagEncoder_Absolute(7, null), PulseWidth(8,
-										com.ctre.phoenix.MotorControl.FeedbackDevice.PulseWidthEncodedPosition);
-		public final int value;
-		public final com.ctre.phoenix.MotorControl.FeedbackDevice feedbackDevice;
-
-		FeedbackDevice(int value, com.ctre.phoenix.MotorControl.FeedbackDevice fd) {
-			this.value = value;
-			this.feedbackDevice = fd;
-		}
-	}
-
-	public enum TalonControlMode {
-		PercentVbus(0, ControlMode.PercentOutput), Position(1, ControlMode.Position), Speed(2,
-				ControlMode.Velocity), Current(3, ControlMode.Current), Voltage(4, null), Follower(5,
-						ControlMode.Follower), MotionProfile(6, ControlMode.MotionProfile), MotionMagic(7,
-								ControlMode.MotionMagic), Disabled(15, ControlMode.MotionMagicArc);
-		public final int value;
-		public final ControlMode controlMode;
-
-		TalonControlMode(int value, ControlMode cm) {
-			this.value = value;
-			this.controlMode = cm;
-		}
-	}
 
 	private final int timeoutMs = 100;
 	private final TalonSRX talonSRX;
-	private final SpeedController speedController;
 	private final int deviceNumber;
 	private NetworkTable networkTable;
 	private ControlMode controlMode;
 	private com.ctre.phoenix.MotorControl.FeedbackDevice feedbackDevice;
 	private NetworkTableEntry m_valueEntry;
 	private int m_valueListener;
+	private double currentSpeed = 0.0;
 
 	public CANTalon(int deviceNumber) {
-		this.talonSRX = new TalonSRX(deviceNumber);
-		this.speedController = this.talonSRX.getWPILIB_SpeedController();
+		talonSRX = new TalonSRX(deviceNumber);
 		this.deviceNumber = deviceNumber;
 		this.controlMode = ControlMode.PercentOutput;
 	}
 
-	public void changeControlMode(TalonControlMode talonControlMode) {
+	public void changeControlMode(ControlMode talonControlMode) {
 		this.controlMode = null;
 		for (ControlMode cm : ControlMode.values()) {
 			if (talonControlMode.value == cm.value) {
@@ -94,7 +61,7 @@ public class CANTalon implements SpeedController, LiveWindowSendable {
 
 	@Override
 	public void disable() {
-		speedController.disable();
+		talonSRX.neutralOutput();
 	}
 
 	public void enable() {
@@ -107,7 +74,7 @@ public class CANTalon implements SpeedController, LiveWindowSendable {
 
 	@Override
 	public double get() {
-		return speedController.get();
+		return currentSpeed;
 	}
 
 	public int getEncPosition() {
@@ -120,10 +87,10 @@ public class CANTalon implements SpeedController, LiveWindowSendable {
 
 	@Override
 	public boolean getInverted() {
-		return speedController.getInverted();
+		return talonSRX.getInverted();
 	}
-	
-	public double getOutputCurrent()  {
+
+	public double getOutputCurrent() {
 		return talonSRX.getOutputCurrent();
 	}
 
@@ -144,26 +111,28 @@ public class CANTalon implements SpeedController, LiveWindowSendable {
 	}
 
 	@Override
-	public void pidWrite(double output) {
-		speedController.pidWrite(output);
+	public void pidWrite(double speed) {
+		currentSpeed = speed;
+		talonSRX.set(ControlMode.PercentOutput, currentSpeed);
 	}
 
-	public void reverseSensor(boolean reverse) {
+	public void reverseSensor(boolean b) {
 		// ????
 	}
 
 	@Override
 	public void set(double speed) {
-		talonSRX.set(controlMode, speed);
+		currentSpeed = speed;
+		talonSRX.set(ControlMode.PercentOutput, currentSpeed);
 	}
 
-	public void setFeedbackDevice(FeedbackDevice fd) {
-		feedbackDevice = fd.feedbackDevice;
+	public void setFeedbackDevice(FeedbackDevice feedbackDevice) {
+		talonSRX.configSelectedFeedbackSensor(feedbackDevice, timeoutMs);
 	}
 
 	@Override
 	public void setInverted(boolean isInverted) {
-		speedController.setInverted(isInverted);
+		talonSRX.setInverted(isInverted);
 	}
 
 	public void setPID(double pidP, double pidI, double pidD, double pidF, int pidIZone, double pidRampRate,
@@ -179,9 +148,8 @@ public class CANTalon implements SpeedController, LiveWindowSendable {
 
 	@Override
 	public void startLiveWindowMode() {
-		set(0); // Stop for safety
+		stopMotor();
 		final Consumer<EntryNotification> listener = new Consumer<EntryNotification>() {
-			@Override
 			public void accept(EntryNotification event) {
 				set(event.value.getDouble());
 			}
@@ -192,14 +160,14 @@ public class CANTalon implements SpeedController, LiveWindowSendable {
 
 	@Override
 	public void stopLiveWindowMode() {
-		set(0); // Stop for safety
+		stopMotor();
 		m_valueEntry.removeListener(m_valueListener);
 		m_valueListener = 0;
 	}
 
 	@Override
 	public void stopMotor() {
-		speedController.stopMotor();
+		talonSRX.neutralOutput();
 	}
 
 	@Override
