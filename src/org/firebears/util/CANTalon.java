@@ -1,33 +1,29 @@
 package org.firebears.util;
 
-import java.util.function.Consumer;
-
 import com.ctre.phoenix.MotorControl.ControlMode;
 import com.ctre.phoenix.MotorControl.FeedbackDevice;
 import com.ctre.phoenix.MotorControl.NeutralMode;
 import com.ctre.phoenix.MotorControl.CAN.TalonSRX;
 
-import edu.wpi.first.networktables.EntryListenerFlags;
-import edu.wpi.first.networktables.EntryNotification;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
+/**
+ * Wrapper class around {@link TalonSRX} that properly implements {@link SpeedController} 
+ * and {@link Sendable}.
+ * @author Keith Rieck
+ */
 public class CANTalon implements SpeedController, Sendable {
 
 	private final int timeoutMs = 100;
 	private final TalonSRX talonSRX;
 	private final int deviceNumber;
-	private NetworkTable networkTable;
 	private ControlMode controlMode;
-	private com.ctre.phoenix.MotorControl.FeedbackDevice feedbackDevice;
-	private NetworkTableEntry m_valueEntry;
-	private int m_valueListener;
 	private double currentSpeed = 0.0;
 	private String name = null;
 	private String subsystem = null;
+	private int encoderMultiplier = 1;
 
 	public CANTalon(int deviceNumber) {
 		talonSRX = new TalonSRX(deviceNumber);
@@ -36,13 +32,7 @@ public class CANTalon implements SpeedController, Sendable {
 	}
 
 	public void changeControlMode(ControlMode talonControlMode) {
-		this.controlMode = null;
-		for (ControlMode cm : ControlMode.values()) {
-			if (talonControlMode.value == cm.value) {
-				this.controlMode = cm;
-				break;
-			}
-		}
+		this.controlMode = talonControlMode;
 	}
 	
 	@Deprecated
@@ -51,15 +41,17 @@ public class CANTalon implements SpeedController, Sendable {
 	}
 	
 	public void configEncoderCodesPerRev(int ticks) {
-		// ????
+		this.encoderMultiplier = ticks;
 	}
 	
+	@Deprecated
 	public void configNominalOutputVoltage(double forwardVoltage, double reverseVoltage) {
-		// ????
+		// ????  This doesn't seem to be available
 	}
 	
+	@Deprecated
 	public void configPeakOutputVoltage(double forwardVoltage, double reverseVoltage) {
-		// ????
+		// ????  This doesn't seem to be available
 	}
 
 	@Override
@@ -68,7 +60,7 @@ public class CANTalon implements SpeedController, Sendable {
 	}
 
 	public void enable() {
-		// ????
+		talonSRX.set(controlMode, currentSpeed);
 	}
 
 	public void enableBrakeMode(boolean brakeEnabled) {
@@ -101,6 +93,20 @@ public class CANTalon implements SpeedController, Sendable {
 		return talonSRX.getOutputCurrent();
 	}
 
+	/**
+	 * @return Position of selected sensor (in Raw Sensor Units).
+	 */
+	public int getSelectedSensorPosition() {
+		return talonSRX.getSelectedSensorPosition();
+	}
+
+	/**
+	 * @return Velocity of selected sensor (in Raw Sensor Units per 100 ms).
+	 */
+	public int getSelectedSensorVelocity() {
+		return talonSRX.getSelectedSensorVelocity();
+	}
+	
 	public String getSmartDashboardType() {
 		return "Speed Controller";
 	}
@@ -118,17 +124,17 @@ public class CANTalon implements SpeedController, Sendable {
 	@Override
 	public void pidWrite(double speed) {
 		currentSpeed = speed;
-		talonSRX.set(ControlMode.PercentOutput, currentSpeed);
+		talonSRX.set(controlMode, currentSpeed);
 	}
 
-	public void reverseSensor(boolean b) {
-		// ????
+	public void reverseSensor(boolean isReversed) {
+		talonSRX.setSensorPhase(isReversed);
 	}
 
 	@Override
 	public void set(double speed) {
 		currentSpeed = speed;
-		talonSRX.set(ControlMode.PercentOutput, currentSpeed);
+		talonSRX.set(controlMode, currentSpeed * encoderMultiplier);
 	}
 
 	public void setFeedbackDevice(FeedbackDevice feedbackDevice) {
@@ -140,8 +146,9 @@ public class CANTalon implements SpeedController, Sendable {
 		talonSRX.setInverted(isInverted);
 	}
 
-	public void setName(String s) {
-		name = s;
+	@Override
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public void setPID(double pidP, double pidI, double pidD, double pidF, int pidIZone, double pidRampRate,
@@ -155,8 +162,8 @@ public class CANTalon implements SpeedController, Sendable {
 		talonSRX.selectProfileSlot(pidProfileSlot);
 	}
 
-	public void setSubsystem(String s) {
-		subsystem = s;
+	public void setSubsystem(String subsystem) {
+		this.subsystem = subsystem;
 	}
 
 	@Override
