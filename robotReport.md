@@ -1,10 +1,10 @@
-# betaTestRobot2, as of 2017.11.05
+# betaTestRobot2, as of 2017.12.17
 
 IterativeRobot for testing the 2018 beta software.
 
 ## CAN
 
-* 2 = Main motor : org.firebears.util.CANTalon@2e4553
+* 2 = Main motor : CANTalon(2)
 
 ## Other Configuration
 
@@ -12,7 +12,7 @@ IterativeRobot for testing the 2018 beta software.
 
 ## Joysticks
 
-* 0 = Main joystick : org.firebears.betaTestRobot2.OI$1@e40994
+* 0 = Main joystick : org.firebears.betaTestRobot2.OI$1@8102c8
     * 1 = Say Hello : HelloCommand(HELLO WORLD)
     * 2 = Say Goodbye : HelloCommand(GOODBYE)
     * 6 = Random Action : RandomCommand
@@ -22,12 +22,12 @@ IterativeRobot for testing the 2018 beta software.
 
 ## DriverStation
 
-* DS voltage = 11.98
-* alliance = Red
+* DS voltage = 11.99
+* alliance = Invalid
 
 ## Power Distribution Panel
 
-* PDP voltage = 12.15
+* PDP voltage = 12.20
 * PDP current =  0.00
 * PDP temp = 25.07 C
 
@@ -105,7 +105,7 @@ IterativeRobot for testing the 2018 beta software.
 * availableProcessors = 2
 * totalMemory = 6,094,848
 * maxMemory = 97,320,960
-* freeMemory = 4,340,968
+* freeMemory = 4,111,960
 
 ## Java classpath
 

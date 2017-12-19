@@ -34,7 +34,7 @@ public class ClearFaultsCommand extends Command {
 			if (component instanceof CANTalon) {
 				((CANTalon) component).clearStickyFaults();
 			} else if (component instanceof TalonSRX) {
-				((TalonSRX) component).clearStickyFaults(500);
+				((TalonSRX) component).clearStickyFaults(10);
 			}
 		}
 	}
