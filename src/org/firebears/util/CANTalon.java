@@ -165,7 +165,9 @@ public class CANTalon implements SpeedController, Sendable {
 
 	@Override
 	public String toString() {
-		return "CANTalon(" + deviceNumber + ")";
+		return "CANTalon(" + deviceNumber 
+				+ (subsystem != null ? "," + subsystem : "")
+				+ (name != null ? "," + name : "") + ")";
 	}
 
 }

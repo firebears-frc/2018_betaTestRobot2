@@ -61,11 +61,11 @@ public class RobotReport {
 	public void addCAN(Integer id, String desc, Object component) {
 		canMap.put(id, new Tuple(desc, component));
 	}
-	
+
 	public void addRelay(Integer id, String desc, Object component) {
 		relayMap.put(id, new Tuple(desc, component));
 	}
-	
+
 	public void addOtherConfig(Integer id, String desc) {
 		otherConfigMap.put(id, desc);
 	}
@@ -74,8 +74,8 @@ public class RobotReport {
 		joystickMap.put(joystickId, new Tuple(desc, stick));
 		joystickButtonMap.put(joystickId, new TreeMap<Integer, Tuple>());
 	}
-	
-	public void addJoystickButton(Integer joystickId, Integer buttonId, String desc, Object command) {		
+
+	public void addJoystickButton(Integer joystickId, Integer buttonId, String desc, Object command) {
 		Map<Integer, Tuple> buttonMap = joystickButtonMap.get(joystickId);
 		if (joystickButtonMap.get(joystickId) == null) {
 			buttonMap = new TreeMap<Integer, Tuple>();
@@ -85,9 +85,18 @@ public class RobotReport {
 	}
 
 	public void write(OutputStream strm) {
+		write(strm, false);
+	}
+
+	public void write(OutputStream strm, boolean verbose) {
 		final PrintStream out = new PrintStream(strm);
 		out.printf("# %s, as of %s%n", name, dateFormat.format(new Date()));
 		out.println();
+
+		if (isNotBlank(System.getenv("serialnum"))) {
+			out.printf("roboRIO serial number: %s%n", System.getenv("serialnum"));
+			out.println();
+		}
 
 		if (isNotBlank(description)) {
 			out.println(description);
@@ -102,7 +111,7 @@ public class RobotReport {
 			}
 			out.println();
 		}
-		
+
 		if (!digitalIoMap.isEmpty()) {
 			out.println("## DIO");
 			out.println();
@@ -111,7 +120,7 @@ public class RobotReport {
 			}
 			out.println();
 		}
-		
+
 		if (!relayMap.isEmpty()) {
 			out.println("## RELAY");
 			out.println();
@@ -138,7 +147,7 @@ public class RobotReport {
 			}
 			out.println();
 		}
-		
+
 		if (!otherConfigMap.isEmpty()) {
 			out.println("## Other Configuration");
 			out.println();
@@ -154,7 +163,7 @@ public class RobotReport {
 			for (Integer joystickId : joystickMap.keySet()) {
 				out.printf("* %d = %s%n", joystickId, joystickMap.get(joystickId));
 				Map<Integer, Tuple> buttonMap = joystickButtonMap.get(joystickId);
-				if (buttonMap!=null && !buttonMap.isEmpty())  {
+				if (buttonMap != null && !buttonMap.isEmpty()) {
 					for (Integer buttonId : buttonMap.keySet()) {
 						out.printf("    * %d = %s%n", buttonId, buttonMap.get(buttonId));
 					}
@@ -163,56 +172,58 @@ public class RobotReport {
 			out.println();
 		}
 
-		out.println("## DriverStation");
-		out.println();
-		DriverStation driverStation = DriverStation.getInstance();
-		out.printf("* DS voltage = %5.2f%n", driverStation.getBatteryVoltage());
-		out.printf("* alliance = %s%n", driverStation.getAlliance());
-		out.println();
+		if (verbose) {
+			out.println("## DriverStation");
+			out.println();
+			DriverStation driverStation = DriverStation.getInstance();
+			out.printf("* DS voltage = %5.2f%n", driverStation.getBatteryVoltage());
+			out.printf("* alliance = %s%n", driverStation.getAlliance());
+			out.println();
 
-		out.println("## Power Distribution Panel");
-		out.println();
-		PowerDistributionPanel pdp = new PowerDistributionPanel();
-		out.printf("* PDP voltage = %5.2f%n", pdp.getVoltage());
-		out.printf("* PDP current = %5.2f%n", pdp.getTotalCurrent());
-		out.printf("* PDP temp = %5.2f C%n", pdp.getTemperature());
-		out.println();
+			out.println("## Power Distribution Panel");
+			out.println();
+			PowerDistributionPanel pdp = new PowerDistributionPanel();
+			out.printf("* PDP voltage = %5.2f%n", pdp.getVoltage());
+			out.printf("* PDP current = %5.2f%n", pdp.getTotalCurrent());
+			out.printf("* PDP temp = %5.2f C%n", pdp.getTemperature());
+			out.println();
 
-		out.println("## System Properties");
-		out.println();
-		for (String propName : (new TreeSet<String>(System.getProperties().stringPropertyNames()))) {
-			if (propName.equals("line.separator"))
-				continue;
-			out.printf("* %s = %s%n", propName, System.getProperty(propName));
+			out.println("## System Properties");
+			out.println();
+			for (String propName : (new TreeSet<String>(System.getProperties().stringPropertyNames()))) {
+				if (propName.equals("line.separator"))
+					continue;
+				out.printf("* %s = %s%n", propName, System.getProperty(propName));
+			}
+			out.println();
+
+			out.println("## Environment Variables");
+			out.println();
+			for (String varName : (new TreeSet<String>(System.getenv().keySet()))) {
+				out.printf("* %s = %s%n", varName, System.getenv(varName));
+			}
+			out.println();
+
+			out.println("## Java Runtime");
+			out.println();
+			out.printf("* availableProcessors = %d%n", Runtime.getRuntime().availableProcessors());
+			out.printf("* totalMemory = %s%n", numberFormat.format(Runtime.getRuntime().totalMemory()));
+			out.printf("* maxMemory = %s%n", numberFormat.format(Runtime.getRuntime().maxMemory()));
+			out.printf("* freeMemory = %s%n", numberFormat.format(Runtime.getRuntime().freeMemory()));
+			out.println();
+
+			out.println("## Java classpath");
+			out.println();
+			URLClassLoader cl = (URLClassLoader) ClassLoader.getSystemClassLoader();
+			for (URL url : cl.getURLs()) {
+				out.printf("* %s%n", url.getFile());
+			}
+			out.println();
 		}
-		out.println();
-
-		out.println("## Environment Variables");
-		out.println();
-		for (String varName : (new TreeSet<String>(System.getenv().keySet()))) {
-			out.printf("* %s = %s%n", varName, System.getenv(varName));
-		}
-		out.println();
-
-		out.println("## Java Runtime");
-		out.println();
-		out.printf("* availableProcessors = %d%n", Runtime.getRuntime().availableProcessors());
-		out.printf("* totalMemory = %s%n", numberFormat.format(Runtime.getRuntime().totalMemory()));
-		out.printf("* maxMemory = %s%n", numberFormat.format(Runtime.getRuntime().maxMemory()));
-		out.printf("* freeMemory = %s%n", numberFormat.format(Runtime.getRuntime().freeMemory()));
-		out.println();
-
-		out.println("## Java classpath");
-		out.println();
-		URLClassLoader cl = (URLClassLoader) ClassLoader.getSystemClassLoader();
-		for (URL url : cl.getURLs()) {
-			out.printf("* %s%n", url.getFile());
-		}
-		out.println();
 
 		out.flush();
 	}
-	
+
 	public void write(File file) {
 		try {
 			OutputStream strm = new FileOutputStream(file);
@@ -226,16 +237,18 @@ public class RobotReport {
 	private boolean isNotBlank(String s) {
 		return s != null && s.trim().length() > 0;
 	}
-	
+
 	private class Tuple {
 		public final String description;
 		public final Object component;
-		public Tuple(String desc, Object component)  {
+
+		public Tuple(String desc, Object component) {
 			this.description = desc;
 			this.component = component;
 		}
+
 		public String toString() {
-			return description + (component==null ? "" : " : " + component);
+			return description + (component == null ? "" : " : " + component);
 		}
 	}
 }
