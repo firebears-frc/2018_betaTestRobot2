@@ -8,11 +8,13 @@
 // update. Deleting the comments indicating the section will prevent
 // it from being updated in the future.
 
-
 package org.firebears.betaTestRobot2.commands;
+
+import static org.firebears.betaTestRobot2.RobotMap.DEBUG;
 import org.firebears.betaTestRobot2.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -44,8 +46,11 @@ public class DriveMotor extends Command {
     // Called repeatedly when this Command is scheduled to run
     @Override
     protected void execute() {
-    	double speed = Robot.oi.getjoystick().getY();
+    	double speed = -1.0 * Robot.oi.getjoystick().getY();
     	Robot.board.setMotor(speed);
+    	if (DEBUG) {
+    		SmartDashboard.putNumber("y", speed);
+    	}
     }
 
     // Make this return true when this Command no longer needs to run execute()

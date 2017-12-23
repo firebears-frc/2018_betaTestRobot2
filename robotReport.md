@@ -1,10 +1,12 @@
-# betaTestRobot2, as of 2017.12.17
+# betaTestRobot2, as of 2017.12.23
+
+roboRIO serial number: 030a4a34
 
 IterativeRobot for testing the 2018 beta software.
 
 ## CAN
 
-* 2 = Main motor : CANTalon(2)
+* 2 = Main motor : CANTalon(2,Board,motor)
 
 ## Other Configuration
 
@@ -12,7 +14,7 @@ IterativeRobot for testing the 2018 beta software.
 
 ## Joysticks
 
-* 0 = Main joystick : org.firebears.betaTestRobot2.OI$1@8102c8
+* 0 = Main joystick : org.firebears.betaTestRobot2.OI$1@1701da1
     * 1 = Say Hello : HelloCommand(HELLO WORLD)
     * 2 = Say Goodbye : HelloCommand(GOODBYE)
     * 6 = Random Action : RandomCommand
@@ -22,12 +24,12 @@ IterativeRobot for testing the 2018 beta software.
 
 ## DriverStation
 
-* DS voltage = 11.99
-* alliance = Invalid
+* DS voltage = 12.01
+* alliance = Red
 
 ## Power Distribution Panel
 
-* PDP voltage = 12.20
+* PDP voltage = 12.15
 * PDP current =  0.00
 * PDP temp = 25.07 C
 
@@ -105,7 +107,7 @@ IterativeRobot for testing the 2018 beta software.
 * availableProcessors = 2
 * totalMemory = 6,094,848
 * maxMemory = 97,320,960
-* freeMemory = 4,111,960
+* freeMemory = 4,075,624
 
 ## Java classpath
 

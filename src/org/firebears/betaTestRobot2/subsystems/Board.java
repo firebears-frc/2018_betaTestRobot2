@@ -8,8 +8,9 @@
 // update. Deleting the comments indicating the section will prevent
 // it from being updated in the future.
 
-
 package org.firebears.betaTestRobot2.subsystems;
+
+import static org.firebears.betaTestRobot2.RobotMap.DEBUG;
 
 import org.firebears.betaTestRobot2.RobotMap;
 import org.firebears.betaTestRobot2.commands.*;
@@ -53,7 +54,7 @@ public class Board extends Subsystem {
     
     public void setMotor(double speed) {
     	motor.set(speed);
-    	if (Math.abs(speed) > 0.1)  {
+    	if (DEBUG && Math.abs(speed) > 0.1)  {
     		double current = RobotMap.boardmotor.getOutputCurrent();
     		System.out.println("::: motor speed = " + speed + " : current = " + current);
     		SmartDashboard.putNumber("speed", speed);

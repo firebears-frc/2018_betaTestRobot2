@@ -223,11 +223,15 @@ public class RobotReport {
 
 		out.flush();
 	}
-
+	
 	public void write(File file) {
+		write(file, false);
+	}
+
+	public void write(File file, boolean verbose) {
 		try {
 			OutputStream strm = new FileOutputStream(file);
-			this.write(strm);
+			this.write(strm, verbose);
 			strm.close();
 		} catch (IOException e) {
 			e.printStackTrace();

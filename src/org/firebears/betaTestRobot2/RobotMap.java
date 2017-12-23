@@ -26,6 +26,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * floating around.
  */
 public class RobotMap {
+	public static final boolean DEBUG = true;
+	
 	public static final int MOTOR_CAN_ID = 2;
 	public static final int ARDUINO_I2C_ADDRESS = 4;
 
