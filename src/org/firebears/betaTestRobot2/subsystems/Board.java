@@ -16,7 +16,6 @@ import org.firebears.betaTestRobot2.RobotMap;
 import org.firebears.betaTestRobot2.commands.*;
 
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.Talon;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -51,7 +50,12 @@ public class Board extends Subsystem {
         // Set the default command for a subsystem here.
         // setDefaultCommand(new MySpecialCommand());
     }
-    
+
+    @Override
+    public void periodic() {
+        // Put code here to be run every loop
+    }
+
     public void setMotor(double speed) {
     	motor.set(speed);
     	if (DEBUG && Math.abs(speed) > 0.1)  {
