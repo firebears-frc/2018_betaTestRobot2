@@ -91,19 +91,19 @@ public class OI {
         Robot.report.addJoystickButton(0, 6, "Random Action", button6Command);
         
         button7 = new JoystickButton(joystick, 7); 
-        Command button7Command = new I2cWriteCommand(RobotMap.arduinoI2c, new byte[] {1, 1, 1});
+        Command button7Command = new I2cWriteCommand(RobotMap.arduinoI2c, new byte[] {'0', '0'});
         button7.whenPressed(button7Command);
-        Robot.report.addJoystickButton(0, 7, "Arduino {1, 1, 1}", button7Command);
+        Robot.report.addJoystickButton(0, 7, "Arduino : set strip 0 to animation 0", button7Command);
         
         button9 = new JoystickButton(joystick, 9); 
-        Command button9Command = new I2cWriteCommand(RobotMap.arduinoI2c, new byte[] {2, 2, 2});
+        Command button9Command = new I2cWriteCommand(RobotMap.arduinoI2c, new byte[] {'0', '1'});
         button9.whenPressed(button9Command);
-        Robot.report.addJoystickButton(0, 9, "Arduino {2, 2, 2}", button9Command);
+        Robot.report.addJoystickButton(0, 9, "Arduino : set strip 0 to animation 1", button9Command);
 
         button11 = new JoystickButton(joystick, 11); 
-        Command button11Command = new I2cWriteCommand(RobotMap.arduinoI2c, new byte[] {3, 3, 3});
+        Command button11Command = new I2cWriteCommand(RobotMap.arduinoI2c, new byte[] {'0', '2'});
         button11.whenPressed(button11Command);
-        Robot.report.addJoystickButton(0, 11, "Arduino {3, 3, 3}", button11Command);
+        Robot.report.addJoystickButton(0, 11, "Arduino : set strip 0 to animation 2", button11Command);
         
         // SmartDashboard Buttons
         SmartDashboard.putData("HelloCommand", new HelloCommand("HI"));

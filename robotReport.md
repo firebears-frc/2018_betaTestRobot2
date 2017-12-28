@@ -1,4 +1,4 @@
-# betaTestRobot2, as of 2017.12.23
+# betaTestRobot2, as of 2017.12.28
 
 roboRIO serial number: 030a4a34
 
@@ -14,24 +14,24 @@ IterativeRobot for testing the 2018 beta software.
 
 ## Joysticks
 
-* 0 = Main joystick : org.firebears.betaTestRobot2.OI$1@1701da1
+* 0 = Main joystick : org.firebears.betaTestRobot2.OI$1@1f65459
     * 1 = Say Hello : HelloCommand(HELLO WORLD)
     * 2 = Say Goodbye : HelloCommand(GOODBYE)
     * 6 = Random Action : RandomCommand
-    * 7 = Arduino {1, 1, 1} : I2cWriteCommand
-    * 9 = Arduino {2, 2, 2} : I2cWriteCommand
-    * 11 = Arduino {3, 3, 3} : I2cWriteCommand
+    * 7 = Arduino : set strip 0 to animation 0 : I2cWriteCommand
+    * 9 = Arduino : set strip 0 to animation 1 : I2cWriteCommand
+    * 11 = Arduino : set strip 0 to animation 2 : I2cWriteCommand
 
 ## DriverStation
 
-* DS voltage = 12.01
+* DS voltage = 11.99
 * alliance = Red
 
 ## Power Distribution Panel
 
 * PDP voltage = 12.15
 * PDP current =  0.00
-* PDP temp = 25.07 C
+* PDP temp = 27.13 C
 
 ## System Properties
 
@@ -107,7 +107,7 @@ IterativeRobot for testing the 2018 beta software.
 * availableProcessors = 2
 * totalMemory = 6,094,848
 * maxMemory = 97,320,960
-* freeMemory = 4,075,624
+* freeMemory = 3,984,600
 
 ## Java classpath
 
