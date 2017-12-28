@@ -1,9 +1,9 @@
 package org.firebears.util;
 
-import com.ctre.phoenix.MotorControl.ControlMode;
-import com.ctre.phoenix.MotorControl.FeedbackDevice;
-import com.ctre.phoenix.MotorControl.NeutralMode;
-import com.ctre.phoenix.MotorControl.CAN.TalonSRX;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.SpeedController;
@@ -24,6 +24,7 @@ public class CANTalon implements SpeedController, Sendable {
 	private String name = null;
 	private String subsystem = null;
 	private int encoderMultiplier = 1;
+	private int pidIdx = 0;
 
 	public CANTalon(int deviceNumber) {
 		talonSRX = new TalonSRX(deviceNumber);
@@ -89,14 +90,14 @@ public class CANTalon implements SpeedController, Sendable {
 	 * @return Position of selected sensor (in Raw Sensor Units).
 	 */
 	public int getSelectedSensorPosition() {
-		return talonSRX.getSelectedSensorPosition();
+		return talonSRX.getSelectedSensorPosition(pidIdx);
 	}
 
 	/**
 	 * @return Velocity of selected sensor (in Raw Sensor Units per 100 ms).
 	 */
 	public int getSelectedSensorVelocity() {
-		return talonSRX.getSelectedSensorVelocity();
+		return talonSRX.getSelectedSensorVelocity(pidIdx);
 	}
 	
 	public String getSmartDashboardType() {
@@ -130,7 +131,7 @@ public class CANTalon implements SpeedController, Sendable {
 	}
 
 	public void setFeedbackDevice(FeedbackDevice feedbackDevice) {
-		talonSRX.configSelectedFeedbackSensor(feedbackDevice, timeoutMs);
+		talonSRX.configSelectedFeedbackSensor(feedbackDevice, pidIdx, timeoutMs);
 	}
 
 	@Override
@@ -144,14 +145,14 @@ public class CANTalon implements SpeedController, Sendable {
 	}
 
 	public void setPID(double pidP, double pidI, double pidD, double pidF, int pidIZone, double pidRampRate,
-			int pidProfileSlot) {
-		talonSRX.config_kP(pidProfileSlot, pidP, timeoutMs);
-		talonSRX.config_kI(pidProfileSlot, pidI, timeoutMs);
-		talonSRX.config_kD(pidProfileSlot, pidD, timeoutMs);
-		talonSRX.config_kF(pidProfileSlot, pidF, timeoutMs);
-		talonSRX.config_IntegralZone(pidProfileSlot, pidIZone, timeoutMs);
+			int slotIdx) {
+		talonSRX.config_kP(slotIdx, pidP, timeoutMs);
+		talonSRX.config_kI(slotIdx, pidI, timeoutMs);
+		talonSRX.config_kD(slotIdx, pidD, timeoutMs);
+		talonSRX.config_kF(slotIdx, pidF, timeoutMs);
+		talonSRX.config_IntegralZone(slotIdx, pidIZone, timeoutMs);
 		talonSRX.configClosedloopRamp(pidRampRate, timeoutMs);
-		talonSRX.selectProfileSlot(pidProfileSlot);
+		talonSRX.selectProfileSlot(slotIdx, pidIdx);
 	}
 
 	public void setSubsystem(String subsystem) {

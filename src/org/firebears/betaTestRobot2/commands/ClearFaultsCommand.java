@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.firebears.util.CANTalon;
 
-import com.ctre.phoenix.MotorControl.CAN.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
