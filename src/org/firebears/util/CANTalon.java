@@ -78,6 +78,7 @@ public class CANTalon implements SpeedController, Sendable {
 		return talonSRX.getInverted();
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -104,10 +105,12 @@ public class CANTalon implements SpeedController, Sendable {
 		return "Speed Controller";
 	}
 
+	@Override
 	public String getSubsystem() {
 		return subsystem;
 	}
 	
+	@Override
 	public void initSendable(SendableBuilder builder) {
 	    builder.setSmartDashboardType("Speed Controller");
 	    builder.setSafeState(() -> disable());
