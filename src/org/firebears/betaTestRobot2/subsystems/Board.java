@@ -59,10 +59,7 @@ public class Board extends Subsystem {
     public void setMotor(double speed) {
     	motor.set(speed);
     	if (DEBUG && Math.abs(speed) > 0.1)  {
-    		double current = RobotMap.boardmotor.getOutputCurrent();
-    		System.out.println("::: motor speed = " + speed + " : current = " + current);
     		SmartDashboard.putNumber("speed", speed);
-    		SmartDashboard.putNumber("current", current);
     	}
     }
 }

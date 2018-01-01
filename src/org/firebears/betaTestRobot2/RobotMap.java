@@ -13,11 +13,16 @@ package org.firebears.betaTestRobot2;
 import org.firebears.betaTestRobot2.commands.ClearFaultsCommand;
 import org.firebears.util.CANTalon;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.ctre.phoenix.motorcontrol.WpilibSpeedController;
 
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
@@ -27,23 +32,29 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class RobotMap {
 	public static final boolean DEBUG = true;
-	
+
 	public static final int MOTOR_CAN_ID = 2;
 	public static final int ARDUINO_I2C_ADDRESS = 4;
 
 	public static I2C arduinoI2c;
 
-	public static CANTalon boardmotor;
+	public static SpeedController boardmotor;
 
 	public static void init() {
-		boardmotor = new CANTalon(MOTOR_CAN_ID);
-		boardmotor.setName("Board", "motor");
-		LiveWindow.add(boardmotor);
-		Robot.report.addCAN(MOTOR_CAN_ID, "Main motor", boardmotor);
+		
+		TalonSRX _boardmotor = new TalonSRX(2);
+		boardmotor = _boardmotor.getWPILIB_SpeedController();
+
+		((WpilibSpeedController) boardmotor).setName("Board", "motor");
+
+		_boardmotor.setInverted(true);
+		_boardmotor.setNeutralMode(NeutralMode.Brake);
+		
+		Robot.report.addCAN(MOTOR_CAN_ID, "motor", boardmotor);
 
 		arduinoI2c = new I2C(Port.kOnboard, ARDUINO_I2C_ADDRESS);
 		Robot.report.addOtherConfig(ARDUINO_I2C_ADDRESS, "Arduino I2C address");
-		
-        SmartDashboard.putData("Clear Faults", new ClearFaultsCommand(new PowerDistributionPanel(), boardmotor));
+
+		SmartDashboard.putData("Clear Faults", new ClearFaultsCommand(new PowerDistributionPanel(), boardmotor));
 	}
 }
