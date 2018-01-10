@@ -3,8 +3,8 @@ package org.firebears.util;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.WpilibSpeedController;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.SpeedController;
@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 public class CANTalon implements SpeedController, Sendable {
 
 	private final int timeoutMs = 100;
-	private final TalonSRX talonSRX;
+	private final WPI_TalonSRX talonSRX;
 	private final int deviceNumber;
 	private ControlMode controlMode;
 	private double currentSpeed = 0.0;
@@ -27,7 +27,7 @@ public class CANTalon implements SpeedController, Sendable {
 	private int pidIdx = 0;
 
 	public CANTalon(int deviceNumber) {
-		talonSRX = new TalonSRX(deviceNumber);
+		talonSRX = new WPI_TalonSRX(deviceNumber);
 		this.deviceNumber = deviceNumber;
 		this.controlMode = ControlMode.PercentOutput;
 	}
@@ -88,7 +88,7 @@ public class CANTalon implements SpeedController, Sendable {
 
 	@Override
 	public String getName() {
-		return ((WpilibSpeedController) talonSRX.getWPILIB_SpeedController()).getName();
+		return talonSRX.getName();
 	}
 
 	public double getOutputCurrent() {
@@ -115,7 +115,7 @@ public class CANTalon implements SpeedController, Sendable {
 
 	@Override
 	public String getSubsystem() {
-		return ((WpilibSpeedController) talonSRX.getWPILIB_SpeedController()).getSubsystem();
+		return talonSRX.getSubsystem();
 	}
 
 	@Override
@@ -157,7 +157,7 @@ public class CANTalon implements SpeedController, Sendable {
 
 	@Override
 	public void setName(String name) {
-		((WpilibSpeedController) talonSRX.getWPILIB_SpeedController()).setName(name);
+		talonSRX.setName(name);
 	}
 
 	public void setPID(double pidP, double pidI, double pidD, double pidF, int pidIZone, double pidRampRate,
@@ -172,7 +172,7 @@ public class CANTalon implements SpeedController, Sendable {
 	}
 
 	public void setSubsystem(String subsystem) {
-		((WpilibSpeedController) talonSRX.getWPILIB_SpeedController()).setSubsystem(subsystem);
+		talonSRX.setSubsystem(subsystem);
 	}
 
 	@Override
