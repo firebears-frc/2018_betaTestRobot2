@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import com.ctre.phoenix.motorcontrol.WpilibSpeedController;
 
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
@@ -43,14 +42,11 @@ public class RobotMap {
 	public static void init() {
 		
 		TalonSRX _boardmotor = new TalonSRX(2);
-		boardmotor = _boardmotor.getWPILIB_SpeedController();
-
-		((WpilibSpeedController) boardmotor).setName("Board", "motor");
 
 		_boardmotor.setInverted(true);
 		_boardmotor.setNeutralMode(NeutralMode.Brake);
 		
-		Robot.report.addCAN(MOTOR_CAN_ID, "motor", boardmotor);
+		Robot.report.addCAN(MOTOR_CAN_ID, "motor", _boardmotor);
 
 		arduinoI2c = new I2C(Port.kOnboard, ARDUINO_I2C_ADDRESS);
 		Robot.report.addOtherConfig(ARDUINO_I2C_ADDRESS, "Arduino I2C address");
