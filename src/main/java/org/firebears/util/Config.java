@@ -11,11 +11,12 @@ import java.util.TreeSet;
 
 /**
  * Configuration properties loaded from property files. A suggested pattern
- * would be: 
+ * would be to have main properties, and then robot-specific properties, 
+ * and some overrides: <p>
    <code>
       public static Config config = new Config("config.properties", "robot.properties", "override.properties");
-   </code> 
-  *Where <tt>config.properties</tt> would contain general properties and
+   </code> <p>
+ * Where <tt>config.properties</tt> would contain general properties and
  * would be in the source code at <tt>src/main/resources/config.properties</tt>.
  * The optional <tt>robot.properties</tt> file would contain properties specific
  * to a robot and would be saved on the roboRIO at location
@@ -84,6 +85,7 @@ public class Config extends Properties {
      * @param dirName  a directory name or {@code null}.
      * @param fileName a file name or file path.
      * @return an {@code InputStream} or {@code null}.
+     * @exception IOException if file input stream cannot be opened.
      */
     protected InputStream findStream(String dirName, String fileName) throws IOException {
         File dir = null;
@@ -106,6 +108,10 @@ public class Config extends Properties {
     /**
      * Returns the boolean at the given key. If this table does not have a value for
      * that position, then an error occurs, and the robot will not start.
+     * 
+     * @param key the key.
+     * @return either the value in the table.
+     * @exception RuntimeException if key is not in the table.
      */
     public boolean getBoolean(String key) {
         if (!containsKey(key)) {
@@ -117,6 +123,10 @@ public class Config extends Properties {
     /**
      * Returns the boolean at the given key. If this table does not have a value for
      * that position, then the given backup value will be returned.
+     * 
+     * @param key the key.
+     * @param backup the value to return if none exists in the table.
+     * @return either the value in the table, or the backup.
      */
     public boolean getBoolean(String key, boolean backup) {
         if (!containsKey(key)) {
@@ -128,6 +138,10 @@ public class Config extends Properties {
     /**
      * Returns a Double number for the given key. If this table does not have a
      * value for that position, then an error occurs, and the robot will not start.
+     * 
+     * @param key the key.
+     * @return either the value in the table.
+     * @exception RuntimeException if key is not in the table. 
      */
     public double getDouble(String key) {
         if (!containsKey(key)) {
@@ -139,6 +153,10 @@ public class Config extends Properties {
     /**
      * Returns a Double number for the given key. If this table does not have a
      * value for that position, then the given backup value will be returned.
+     * 
+     * @param key the key.
+     * @param backup the value to return if none exists in the table.
+     * @return either the value in the table, or the backup.
      */
     public double getDouble(String key, double backup) {
         if (!containsKey(key)) {
@@ -150,6 +168,10 @@ public class Config extends Properties {
     /**
      * Returns a Float number for the given key. If this table does not have a value
      * for that position, then an error occurs, and the robot will not start.
+     * 
+     * @param key the key.
+     * @return either the value in the table.
+     * @exception RuntimeException if key is not in the table.
      */
     public float getFloat(String key) {
         if (!containsKey(key)) {
@@ -161,6 +183,10 @@ public class Config extends Properties {
     /**
      * Returns a Float number for the given key. If this table does not have a value
      * for that position, then the given backup value will be returned.
+     * 
+     * @param key the key.
+     * @param backup the value to return if none exists in the table.
+     * @return either the value in the table, or the backup.
      */
     public float getFloat(String key, float backup) {
         if (!containsKey(key)) {
@@ -172,6 +198,10 @@ public class Config extends Properties {
     /**
      * Returns an Integer for the given key. If this table does not have a value for
      * that position, then an error occurs, and the robot will not start.
+     * 
+     * @param key the key.
+     * @return either the value in the table.
+     * @exception RuntimeException if key is not in the table.
      */
     public int getInt(String key) {
         if (!containsKey(key)) {
@@ -183,6 +213,10 @@ public class Config extends Properties {
     /**
      * Returns an Integer for the given key. If this table does not have a value for
      * that position, then the given backup value will be returned.
+     * 
+     * @param key the key.
+     * @param backup the value to return if none exists in the table.
+     * @return either the value in the table, or the backup.
      */
     public int getInt(String key, int backup) {
         if (!containsKey(key)) {
@@ -194,6 +228,10 @@ public class Config extends Properties {
     /**
      * Returns a Long integer for the given key. If this table does not have a value
      * for that position, then an error occurs, and the robot will not start.
+     * 
+     * @param key the key.
+     * @return either the value in the table.
+     * @exception RuntimeException if key is not in the table.
      */
     public long getLong(String key) {
         if (!containsKey(key)) {
@@ -205,6 +243,10 @@ public class Config extends Properties {
     /**
      * Returns a Long integer for the given key. If this table does not have a value
      * for that position, then the given backup value will be returned.
+     * 
+     * @param key the key.
+     * @param backup the value to return if none exists in the table.
+     * @return either the value in the table, or the backup
      */
     public long getLong(String key, long backup) {
         if (!containsKey(key)) {
@@ -215,6 +257,8 @@ public class Config extends Properties {
 
     /**
      * Print all the key/value pairs, with the keys sorted alphabetically.
+     * 
+     * @param outStream Stream for printing.  You may put <code>System.out</code> here.
      */
     public void print(PrintStream outStream) {
         outStream.println("# CONFIG PROPERTIES");
