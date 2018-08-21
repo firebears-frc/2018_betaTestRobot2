@@ -97,22 +97,30 @@ public class PlayRecordingCommand extends Command {
 
     private Recording loadRecording(File file) {
         Recording recording = null;
-        try (Reader reader = new FileReader(file)) {
-            recording = factory.load(reader);
-        } catch (IOException e) {
-            e.printStackTrace();
-            recording = null;
+        if (file == null) {
+            System.out.println(this.getClass().getSimpleName() + ": loadRecording : null file");
+        } else {
+            try (Reader reader = new FileReader(file)) {
+                recording = factory.load(reader);
+            } catch (IOException e) {
+                e.printStackTrace();
+                recording = null;
+            }
         }
         return recording;
     }
 
     private Recording loadRecording(InputStream stream) {
         Recording recording = null;
-        try (Reader reader = new InputStreamReader(stream)) {
-            recording = this.factory.load(reader);
-        } catch (IOException e) {
-            e.printStackTrace();
-            recording = null;
+        if (stream == null) {
+            System.out.println(this.getClass().getSimpleName() + ": loadRecording : null stream");
+        } else {
+            try (Reader reader = new InputStreamReader(stream)) {
+                recording = this.factory.load(reader);
+            } catch (IOException e) {
+                e.printStackTrace();
+                recording = null;
+            }
         }
         return recording;
     }

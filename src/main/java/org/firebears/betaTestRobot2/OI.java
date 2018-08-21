@@ -123,6 +123,7 @@ public class OI {
         SmartDashboard.putData("Clear Arduino", new I2cWriteCommand(arduinoI2c, new byte[] { 0, 0, 0 }));
 
         recordingFactory = new RecordingFactory();
+        recordingFactory.addAll(Robot.board.getRecordables());
         SmartDashboard.putData("Start Recording", new StartRecordingCommand(recordingFactory));
         SmartDashboard.putData("Stop Recording", new StopRecordingCommand(recordingFactory));
         SmartDashboard.putData("Play Recording", new PlayRecordingCommand(recordingFactory));
