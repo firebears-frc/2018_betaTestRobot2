@@ -14,6 +14,7 @@ import static org.firebears.betaTestRobot2.Robot.config;
 import static org.firebears.betaTestRobot2.Robot.report;
 
 import org.firebears.betaTestRobot2.commands.DriveMotor;
+import org.firebears.recording.RecordingFactory;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -62,6 +63,10 @@ public class Board extends Subsystem {
     @Override
     public void periodic() {
         // Put code here to be run every loop
+    }
+
+    public void addRecordables(RecordingFactory factory) {
+        factory.add(motor, "motor");
     }
 
     public void setMotor(double speed) {

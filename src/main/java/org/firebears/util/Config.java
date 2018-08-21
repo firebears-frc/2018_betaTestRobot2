@@ -32,7 +32,7 @@ import java.util.TreeSet;
  */
 public class Config extends Properties {
     private static final long serialVersionUID = 1L;
-    private boolean DEBUG = true;
+    public boolean DEBUG = true;
 
     /**
      * Load a sequence of property files.
