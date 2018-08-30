@@ -10,7 +10,6 @@
 
 package org.firebears.betaTestRobot2;
 
-import static org.firebears.betaTestRobot2.Robot.config;
 import static org.firebears.betaTestRobot2.Robot.report;
 
 import org.firebears.betaTestRobot2.commands.HelloCommand;
@@ -24,6 +23,7 @@ import org.firebears.recording.StopRecordingCommand;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -75,6 +75,7 @@ public class OI {
 
     public OI() {
 
+        Preferences config = Preferences.getInstance();
         int arduinoI2cAddress = config.getInt("arduino.i2c", 4);
         arduinoI2c = new I2C(Port.kOnboard, arduinoI2cAddress);
         report.addOtherConfig(arduinoI2cAddress, "Arduino I2C address");

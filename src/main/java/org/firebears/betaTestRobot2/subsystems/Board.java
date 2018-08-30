@@ -10,7 +10,6 @@
 
 package org.firebears.betaTestRobot2.subsystems;
 
-import static org.firebears.betaTestRobot2.Robot.config;
 import static org.firebears.betaTestRobot2.Robot.report;
 
 import java.util.Arrays;
@@ -23,6 +22,7 @@ import org.firebears.betaTestRobot2.commands.DriveMotor;
 import org.firebears.recording.Recordable;
 import org.firebears.recording.RecordingFactory.SpeedControllerRecordable;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,8 +41,9 @@ public class Board extends Subsystem {
     private final SpeedController motor;
 
     public Board() {
+        Preferences config = Preferences.getInstance();
         DEBUG = config.getBoolean("debug", false);
-        int motorCanID = config.getInt("board.boardMotor.canId");
+        int motorCanID = config.getInt("board.boardMotor.canId", 2);
         motor = new WPI_TalonSRX(motorCanID);
         motor.setInverted(config.getBoolean("board.boardMotor.inverted", true));
         ((WPI_TalonSRX) motor).setNeutralMode(NeutralMode.Brake);
