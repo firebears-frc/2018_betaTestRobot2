@@ -22,7 +22,6 @@ import java.security.KeyStore.LoadStoreParameter;
 
 import org.firebears.betaTestRobot2.commands.*;
 import org.firebears.betaTestRobot2.subsystems.*;
-import org.firebears.util.Config0;
 import org.firebears.util.RobotReport;
 import static org.firebears.util.Config.*;
 
@@ -50,7 +49,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        loadConfiguration("config.properties", "robot.properties", "override.properties");
+        loadConfiguration("config.properties", "/home/lvuser/robot.properties", "/u/override.properties");
         
 		report = new RobotReport("betaTestRobot2");
 		report.setDescription("IterativeRobot for testing the 2018 beta software.");
