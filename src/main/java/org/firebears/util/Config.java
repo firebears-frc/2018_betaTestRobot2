@@ -6,31 +6,50 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import edu.wpi.first.wpilibj.Preferences;
 
+/**
+ * Utility functions for loading {@link Properties} files into WPILib's
+ * {@link Preferences} objects.
+ */
 public final class Config {
 
     protected static PrintStream out = System.err;
-    
+
     protected final static String BOOLEAN = "^(true)|(false)";
     protected final static String INTEGER = "^-?\\d+$";
     protected final static String LONG = "^-?\\d+L$";
     protected final static String FLOAT = "^-?\\d+\\.\\d*F$";
     protected final static String DOUBLE = "^-?\\d+\\.\\d*D?$";
 
+    /**
+     * Print out all key/value pairs in {@link Preferences}, with the keys in
+     * alphabetical order.
+     * 
+     * @param outStream
+     *            Outputstream, such as {@code System.out}.
+     */
     public static void printPreferences(PrintStream outStream) {
         final Preferences config = Preferences.getInstance();
-        Collection<String> keySet = new TreeSet<String>(config.getKeys());
-        for (String key : keySet) {
-            out.printf("%s=%s%n", key, config.getString(key, null));
+        SortedSet<String> sortedKeys = new TreeSet<String>(config.getKeys());
+        for (String key : sortedKeys) {
+            outStream.printf("%s=%s%n", key, config.getString(key, null));
         }
     }
 
+    /**
+     * Read a sequence of property files into {@link Preferences} . If the files or
+     * resources don't exist, print an error message and gracefully move to the next
+     * file.
+     * 
+     * @param fileNames
+     *            File names or resource names.
+     */
     public static void loadConfiguration(String... fileNames) {
         final Preferences config = Preferences.getInstance();
         for (String fileName : fileNames) {
@@ -38,9 +57,9 @@ public final class Config {
                 InputStream inStream = openStream(fileName);
                 Properties properties = loadProperties(inStream);
                 for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-                    String key = entry.getKey().toString();
+                    String key = entry.getKey().toString().trim();
                     String value = entry.getValue().toString();
-                    if (value.trim().length()==0) {
+                    if (value.length() == 0) {
                         config.remove(key);
                     } else if (value.matches(BOOLEAN)) {
                         config.putBoolean(key, Boolean.parseBoolean(value));

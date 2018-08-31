@@ -52,7 +52,7 @@ class ConfigTest {
         
         // Assert
         assertEquals(5, properties.size());
-        assertEquals("bluex", properties.getProperty("color"));
+        assertEquals("blue", properties.getProperty("color"));
         assertEquals("150.25", properties.getProperty("height"));
         assertEquals("", properties.getProperty("xyzzy"));
     }
