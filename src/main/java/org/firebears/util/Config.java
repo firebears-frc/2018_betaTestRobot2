@@ -128,8 +128,12 @@ public final class Config {
     }
 
     /**
-     * Load the java.util.logging configuration.  This should be called statically before
-     * any of the logger variables have been created.
+     * Load the java.util.logging configuration. This should be called statically
+     * before any of the logger variables have been created. Note that an
+     * alternative (possibly better) way of loading log configuration is to put the
+     * path to the config file in the system property
+     * <tt>java.util.logging.config.file</tt>.  This can be specified as one of the jvmArgs in
+     * the build.gradle file within the deploy / artifacts / frcJavaArtifact section.
      * 
      * @param fileName File path or a resource name.
      */
