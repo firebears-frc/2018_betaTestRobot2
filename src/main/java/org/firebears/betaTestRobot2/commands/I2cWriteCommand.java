@@ -1,6 +1,7 @@
 package org.firebears.betaTestRobot2.commands;
 
 import java.nio.ByteBuffer;
+import java.util.logging.Logger;
 
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.command.Command;
@@ -16,6 +17,7 @@ public class I2cWriteCommand extends Command {
 	private final int sendSize;
 	private final ByteBuffer dataReceived;
 	private final int receiveSize;
+	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	public I2cWriteCommand(I2C i2c, byte[] bytes) {
 		this.i2c = i2c;
@@ -31,6 +33,7 @@ public class I2cWriteCommand extends Command {
 	@Override
 	protected void execute() {
 		i2c.transaction(dataToSend, sendSize, dataReceived, receiveSize);
+		logger.fine("send to " + i2c);
 	}
 	
 	@Override

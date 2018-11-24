@@ -214,9 +214,11 @@ public class RobotReport {
 
 			out.println("## Java classpath");
 			out.println();
-			URLClassLoader cl = (URLClassLoader) ClassLoader.getSystemClassLoader();
-			for (URL url : cl.getURLs()) {
-				out.printf("* %s%n", url.getFile());
+			if (ClassLoader.getSystemClassLoader() instanceof URLClassLoader) {
+				URLClassLoader cl = (URLClassLoader) ClassLoader.getSystemClassLoader();
+				for (URL url : cl.getURLs()) {
+					out.printf("* %s%n", url.getFile());
+				}
 			}
 			out.println();
 		}

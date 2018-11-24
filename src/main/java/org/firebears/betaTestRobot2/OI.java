@@ -113,10 +113,10 @@ public class OI {
         button9.whenPressed(button9Command);
         Robot.report.addJoystickButton(0, 9, "Arduino : set strip 0 to animation 1", button9Command);
 
-        button11 = new JoystickButton(joystick, 11);
+        button11 = new JoystickButton(joystick, 10);
         Command button11Command = new I2cWriteCommand(arduinoI2c, new byte[] { '0', '2' });
         button11.whenPressed(button11Command);
-        Robot.report.addJoystickButton(0, 11, "Arduino : set strip 0 to animation 2", button11Command);
+        Robot.report.addJoystickButton(0, 10, "Arduino : set strip 0 to animation 2", button11Command);
 
         // SmartDashboard Buttons
         SmartDashboard.putData("HelloCommand", new HelloCommand("HI"));
