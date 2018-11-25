@@ -129,27 +129,27 @@ public final class Config {
 
     /**
      * Load the java.util.logging configuration. This should be called statically
-     * before any of the logger variables have been created. Note that an
-     * alternative (possibly better) way of loading log configuration is to put the
-     * path to the config file in the system property
-     * <tt>java.util.logging.config.file</tt>.  This can be specified as one of the jvmArgs in
-     * the build.gradle file within the deploy / artifacts / frcJavaArtifact section.
+     * before any of the logger variables have been created. Each filename will be
+     * tried until one succeeds.
      * 
-     * @param fileName File path or a resource name.
+     * @param fileNames File names or resource names.
      */
-    public static void loadLogConfiguration(String fileName) {
-        try {
-            InputStream inStream = openStream(fileName);
-            LogManager logManager = LogManager.getLogManager();
-            if (inStream != null) {
-                logManager.readConfiguration(inStream);
-                logger = Logger.getLogger(Config.class.getName());
-                logger.config("Loading log config from " + fileName);
-            }
-        } catch (Exception e) {
-            if (logger != null) {
-                logger.log(Level.WARNING, "Failed loading log configuration file: " + fileName, e);
-            }
-        }
-    }
+	public static String loadLogConfiguration(String... fileNames) {
+		LogManager logManager = LogManager.getLogManager();
+		for (String fileName : fileNames) {
+			try {
+				InputStream inStream = openStream(fileName);
+				if (inStream == null) { continue; }
+				logManager.readConfiguration(inStream);
+				logger = Logger.getLogger(Config.class.getName());
+				logger.config("Loading log config from " + fileName);
+				return fileName;
+			} catch (Exception e) {
+				if (logger != null) {
+					logger.log(Level.WARNING, "Failed loading log configuration file: " + fileName, e);
+				}
+			}
+		}
+		return null;
+	}
 }
